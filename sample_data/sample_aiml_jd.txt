@@ -1,0 +1,18 @@
+Job Title: Associate AI/ML Engineer
+Company: DataSphere Intelligence
+Location: Remote
+
+About the Role:
+DataSphere Intelligence is seeking an Associate AI/ML Engineer to train predictive machine learning models, process complex datasets, and build evaluation pipelines.
+
+Key Responsibilities:
+- Design and train supervised machine learning models using Python and Scikit-Learn.
+- Perform exploratory data analysis and feature engineering utilizing Pandas and NumPy.
+- Build clean, reproducible data preprocessing workflows and model scoring pipelines.
+- Collaborate with software engineers to package predictive models via REST API endpoints.
+
+Requirements:
+- Hands-on proficiency in Python programming for data science.
+- Strong understanding of core Machine Learning algorithms (regression, classification, clustering).
+- Experience with Scikit-Learn, Pandas, NumPy, and SQL.
+- Strong problem-solving skills and verifiable projects demonstrating model development.

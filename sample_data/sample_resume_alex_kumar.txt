@@ -1,0 +1,38 @@
+Alex Kumar
+alex.kumar@example.com | +1 (555) 234-5678 | github.com/alexkumar-dev | linkedin.com/in/alexkumar-dev
+
+SUMMARY
+Motivated Computer Science undergraduate with hands-on experience in full-stack web development and applied machine learning. Proven record building accessible web applications and data-driven prediction models with verifiable evidence.
+
+EDUCATION
+Bachelor of Technology in Computer Science
+Apex Institute of Technology | 2021 - 2025 | GPA: 3.8 / 4.0
+
+SKILLS
+Python, JavaScript, SQL, HTML5, CSS3, HTML, CSS, JavaScript, React, Bootstrap, Node.js, Git, GitHub, SQLite, Machine Learning, Scikit-Learn, Pandas, NumPy
+
+PROJECTS
+Movie Success Prediction System | Python, Machine Learning, Scikit-Learn, Pandas
+Engineered an end-to-end predictive pipeline analyzing historical box office metrics and sentiment scores to forecast opening weekend film revenue.
+GitHub: https://github.com/alexkumar-dev/movie-success-pred
+
+Student Portfolio & Campus Portal | HTML, CSS, JavaScript, React, Git
+Designed and deployed a responsive web portal allowing campus students to track study clubs, browse events, and share peer notes.
+GitHub: https://github.com/alexkumar-dev/campus-portal
+
+Air Quality Prediction Model | Python, Machine Learning, NumPy, Scikit-Learn
+Built regression model to predict particulate matter air quality index (PM2.5) across urban sensor stations using Python.
+GitHub: https://github.com/alexkumar-dev/air-quality-ml
+
+EXPERIENCE
+Frontend Web Development Intern - Apex Web Solutions | June 2024 - August 2024
+Collaborated with agile engineering team to implement responsive landing pages using HTML, CSS, and JavaScript. Improved web accessibility standards across 12 product pages.
+
+CERTIFICATIONS
+Meta Front-End Developer Professional Certificate - Coursera (2024)
+Python for Data Science and Machine Learning - Udemy (2023)
+
+ACHIEVEMENTS
+• First Place Winner - Apex Hackathon 2024 (Team of 4)
+• Completed 250+ algorithmic problem solutions on LeetCode (Rating: 1680)
+• Dean's Honor List for Academic Excellence (Consecutive semesters: 2022-2024)

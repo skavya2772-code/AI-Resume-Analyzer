@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Resume - SkillAlign AI{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <h1 class="page-title"><i class="fa-solid fa-cloud-arrow-up"></i> Upload & Parse Resume</h1>
+        <p class="page-subtitle">Upload your existing PDF or DOCX resume to extract sections, skills, and evidence.</p>
+    </div>
+
+    <div class="grid-2-col">
+        <!-- Left: Upload Box & Role Selection -->
+        <div class="card upload-card">
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="switchUploadTab('file-tab')">
+                    <i class="fa-solid fa-file-pdf"></i> Upload File (PDF/DOCX)
+                </button>
+                <button class="tab-btn" onclick="switchUploadTab('text-tab')">
+                    <i class="fa-solid fa-paste"></i> Paste Text
+                </button>
+            </div>
+
+            <!-- Tab 1: File Upload -->
+            <div id="file-tab" class="tab-content active">
+                <form id="upload-form" onsubmit="handleFileUpload(event)">
+                    <div class="drop-zone" id="drop-zone">
+                        <i class="fa-solid fa-cloud-arrow-up drop-icon"></i>
+                        <h3>Drag & drop your resume file here</h3>
+                        <p class="text-muted">Supports <strong>PDF</strong> and <strong>DOCX</strong> (Max 16MB)</p>
+                        <input type="file" id="resume-file" name="file" accept=".pdf,.docx,.doc,.txt" class="file-input" onchange="displaySelectedFilename(this)">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('resume-file').click()">
+                            Browse Files
+                        </button>
+                        <div id="selected-file-name" class="selected-file-display"></div>
+                    </div>
+
+                    <!-- Target Role Selection -->
+                    <div class="form-group mt-4">
+                        <label class="form-label" for="target-role-select">
+                            <i class="fa-solid fa-crosshairs"></i> Target Job Role
+                        </label>
+                        <select id="target-role-select" class="form-control" name="target_role">
+                            {% for role_name in roles.keys() %}
+                            <option value="{{ role_name }}">{{ role_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Job Description Option -->
+                    <div class="form-group mt-3">
+                        <div class="label-with-actions">
+                            <label class="form-label" for="job-description-text">
+                                <i class="fa-solid fa-briefcase"></i> Job Description (Optional)
+                            </label>
+                            <div class="quick-jd-actions">
+                                <button type="button" class="btn-link-sm" onclick="insertSampleJD('frontend')">Load Frontend JD</button>
+                                <span class="divider">|</span>
+                                <button type="button" class="btn-link-sm" onclick="insertSampleJD('aiml')">Load AI/ML JD</button>
+                            </div>
+                        </div>
+                        <textarea id="job-description-text" class="form-control" rows="4" placeholder="Paste the employer's job description here to analyze alignment against specific requirements..."></textarea>
+                    </div>
+
+                    <div class="form-actions mt-4">
+                        <button type="submit" id="upload-submit-btn" class="btn btn-primary btn-block btn-lg">
+                            <i class="fa-solid fa-bolt"></i> Upload & Extract Details
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tab 2: Paste Raw Text -->
+            <div id="text-tab" class="tab-content">
+                <form id="paste-form" onsubmit="handleTextUpload(event)">
+                    <div class="form-group">
+                        <label class="form-label">Paste Full Resume Text:</label>
+                        <textarea id="resume-text" class="form-control" rows="12" placeholder="Paste text containing your education, skills, projects, and experience..."></textarea>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label class="form-label">Target Role</label>
+                        <select id="target-role-select-text" class="form-control">
+                            {% for role_name in roles.keys() %}
+                            <option value="{{ role_name }}">{{ role_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-actions mt-4">
+                        <button type="submit" class="btn btn-primary btn-block btn-lg">
+                            <i class="fa-solid fa-bolt"></i> Parse Resume Text
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="demo-card-footer mt-4">
+                <p>Want a rapid evaluation? Load our pre-packaged student resume with real projects and claims:</p>
+                <button type="button" class="btn btn-outline-secondary btn-block" onclick="loadSampleResume()">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Load Sample Student Resume (Alex Kumar)
+                </button>
+            </div>
+        </div>
+
+        <!-- Right: Real-time Extraction Preview -->
+        <div class="card preview-card" id="extraction-preview-card">
+            <div class="card-header">
+                <h3><i class="fa-solid fa-list-check"></i> Extraction Preview</h3>
+                <span id="extraction-status-badge" class="badge badge-warning">Awaiting Upload</span>
+            </div>
+
+            <div id="extraction-placeholder" class="placeholder-state">
+                <div class="placeholder-icon"><i class="fa-regular fa-file-lines"></i></div>
+                <h4>No Resume Parsed Yet</h4>
+                <p class="text-muted">Upload a PDF/DOCX or click <em>Load Sample Student Resume</em> to see instant structural parsing results here.</p>
+            </div>
+
+            <div id="extraction-results" class="extraction-results" style="display: none;">
+                <div class="candidate-summary-box">
+                    <h3 id="ext-name">Candidate Name</h3>
+                    <p id="ext-contact" class="text-muted"></p>
+                    <div id="ext-links" class="link-chips mt-2"></div>
+                </div>
+
+                <div class="ext-section mt-3">
+                    <h4><i class="fa-solid fa-microchip"></i> Extracted Skills (<span id="ext-skills-count">0</span>)</h4>
+                    <div id="ext-skills-container" class="skill-chips"></div>
+                </div>
+
+                <div class="ext-section mt-3">
+                    <h4><i class="fa-solid fa-diagram-project"></i> Extracted Projects (<span id="ext-projects-count">0</span>)</h4>
+                    <div id="ext-projects-list" class="mini-list"></div>
+                </div>
+
+                <div class="ext-section mt-3">
+                    <h4><i class="fa-solid fa-graduation-cap"></i> Education</h4>
+                    <div id="ext-education-list" class="mini-list"></div>
+                </div>
+
+                <div class="proceed-action mt-4">
+                    <button id="proceed-analyze-btn" class="btn btn-success btn-block btn-lg" onclick="proceedToAnalyze()">
+                        Proceed to Evidence Audit & Scores <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

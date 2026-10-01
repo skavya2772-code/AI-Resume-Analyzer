@@ -1,0 +1,20 @@
+Job Title: Junior Frontend Developer
+Company: Horizon Tech Labs
+Location: Remote / Hybrid
+
+About the Role:
+We are looking for an enthusiastic Frontend Developer to join our core web engineering team. You will build user-friendly single-page applications, implement responsive designs, and integrate REST APIs.
+
+Key Responsibilities:
+- Build clean, accessible, modern web interfaces using HTML, CSS, and JavaScript.
+- Develop interactive user interface components with React.
+- Collaborate with backend engineers to integrate REST API services.
+- Utilize Git and GitHub for collaborative branching and pull request code reviews.
+- Ensure cross-browser compatibility and responsive performance across mobile and desktop.
+
+Requirements:
+- Strong proficiency in HTML5, CSS3, and modern JavaScript (ES6+).
+- Practical experience building web apps with React.
+- Understanding of REST API integration and state handling.
+- Familiarity with version control using Git.
+- Demonstrated projects or code repositories on GitHub.

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI Resume Analyzer & Skill-Based Resume Builder{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="app-header">
+        <div class="nav-container">
+            <a href="/" class="brand-logo">
+                <div class="brand-icon"><i class="fa-solid fa-brain-circuit"></i></div>
+                <div class="brand-text">
+                    <span class="brand-title">SkillAlign <span class="badge-ai">AI</span></span>
+                    <span class="brand-sub">Resume Analyzer & Builder</span>
+                </div>
+            </a>
+            
+            <nav class="main-nav">
+                <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">
+                    <i class="fa-solid fa-house"></i> Home
+                </a>
+                <a href="/upload" class="nav-link {% if request.path == '/upload' %}active{% endif %}">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Upload
+                </a>
+                <a href="/analyze" class="nav-link {% if request.path == '/analyze' %}active{% endif %}">
+                    <i class="fa-solid fa-chart-pie"></i> Analyzer
+                </a>
+                <a href="/builder" class="nav-link {% if request.path == '/builder' %}active{% endif %}">
+                    <i class="fa-solid fa-file-pen"></i> Builder
+                </a>
+                <a href="/preview" class="nav-link {% if request.path == '/preview' %}active{% endif %}">
+                    <i class="fa-solid fa-eye"></i> Preview
+                </a>
+                <a href="/versions" class="nav-link {% if request.path == '/versions' %}active{% endif %}">
+                    <i class="fa-solid fa-code-branch"></i> Versions
+                </a>
+            </nav>
+
+            <div class="nav-actions">
+                <button id="quick-demo-btn" class="btn btn-outline-primary btn-sm" onclick="loadSampleResume()">
+                    <i class="fa-solid fa-bolt"></i> 1-Click Demo Resume
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Global Flash / Toast Alert Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Main Content Area -->
+    <main class="app-main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <p><strong>AI Resume Analyzer & Skill-Based Resume Builder</strong> &copy; 2026. Built with Python Flask, SQLite, and Gemini AI.</p>
+                <p class="text-muted">Strict Anti-Hallucination Evidence Mapping &bull; Zero Fabricated Metrics &bull; ATS-Compliant PDF Export</p>
+            </div>
+            <div class="footer-right">
+                <span class="system-status"><span class="status-indicator"></span> System Ready</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- App Scripts -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

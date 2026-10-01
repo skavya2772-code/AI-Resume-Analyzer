@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block title %}Resume Preview & Role Customizer - SkillAlign AI{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Top Action / Versioning Toolbar -->
+    <div class="card preview-toolbar mb-4">
+        <div class="toolbar-left">
+            <h1 class="page-title-sm"><i class="fa-solid fa-file-lines"></i> Resume Preview & Role Generator</h1>
+            <p class="text-muted">Edit content live, customize for target engineering roles, and export ATS-compliant PDF.</p>
+        </div>
+        <div class="toolbar-right">
+            <div class="role-selector-wrap">
+                <label for="preview-role-select">Target Role:</label>
+                <select id="preview-role-select" class="form-control-sm" onchange="switchRolePreview()">
+                    {% for role_name in roles.keys() %}
+                    <option value="{{ role_name }}" {% if role_name == selected_role %}selected{% endif %}>{{ role_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="version-save-wrap">
+                <input type="text" id="version-name-input" class="form-control-sm" placeholder="Version label (e.g. Frontend v1)" value="{{ selected_role }} Version">
+                <button class="btn btn-secondary btn-sm" onclick="saveCurrentVersion()">
+                    <i class="fa-solid fa-floppy-disk"></i> Save Version
+                </button>
+            </div>
+
+            <a id="download-pdf-btn" href="#" class="btn btn-primary btn-sm" onclick="downloadPdf(event)">
+                <i class="fa-solid fa-file-pdf"></i> Download PDF
+            </a>
+
+            <button class="btn btn-outline-primary btn-sm" onclick="goToAnalysis()">
+                <i class="fa-solid fa-chart-pie"></i> Audit Alignment
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Workspace: Editor Left, Live ATS Sheet Right -->
+    <div class="preview-workspace-grid">
+        <!-- Left: Live Editable Inputs -->
+        <div class="card editor-panel">
+            <div class="card-header">
+                <h3><i class="fa-solid fa-pen-to-square"></i> Edit Content Before Export</h3>
+                <span class="badge badge-subtle">Changes reflect in preview</span>
+            </div>
+
+            <div class="editor-scroll">
+                <!-- Contact info -->
+                <div class="editor-section">
+                    <h4>Header & Contact</h4>
+                    <div class="form-group mb-2">
+                        <label class="form-label-sm">Candidate Name</label>
+                        <input type="text" id="edit-name" class="form-control-sm" oninput="updateSheetPreview()">
+                    </div>
+                    <div class="grid-2-col mb-2">
+                        <div>
+                            <label class="form-label-sm">Email</label>
+                            <input type="text" id="edit-email" class="form-control-sm" oninput="updateSheetPreview()">
+                        </div>
+                        <div>
+                            <label class="form-label-sm">Phone</label>
+                            <input type="text" id="edit-phone" class="form-control-sm" oninput="updateSheetPreview()">
+                        </div>
+                    </div>
+                    <div class="grid-2-col">
+                        <div>
+                            <label class="form-label-sm">GitHub</label>
+                            <input type="text" id="edit-github" class="form-control-sm" oninput="updateSheetPreview()">
+                        </div>
+                        <div>
+                            <label class="form-label-sm">LinkedIn</label>
+                            <input type="text" id="edit-linkedin" class="form-control-sm" oninput="updateSheetPreview()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Professional Summary -->
+                <div class="editor-section mt-3">
+                    <div class="flex-header mb-1">
+                        <h4>Professional Summary</h4>
+                        <button type="button" class="btn-link-sm" onclick="regenerateAISummary()">
+                            <i class="fa-solid fa-rotate"></i> Regenerate AI Summary
+                        </button>
+                    </div>
+                    <textarea id="edit-summary" class="form-control-sm" rows="4" oninput="updateSheetPreview()"></textarea>
+                </div>
+
+                <!-- Skills -->
+                <div class="editor-section mt-3">
+                    <h4>Technical Skills</h4>
+                    <textarea id="edit-skills" class="form-control-sm" rows="3" oninput="updateSheetPreview()"></textarea>
+                    <small class="text-muted">Separate skills with commas.</small>
+                </div>
+
+                <!-- Projects -->
+                <div class="editor-section mt-3">
+                    <div class="flex-header mb-2">
+                        <h4>Projects</h4>
+                        <span class="text-muted" style="font-size: 0.8rem;">Prioritized for selected role</span>
+                    </div>
+                    <div id="edit-projects-container"></div>
+                </div>
+
+                <!-- Education -->
+                <div class="editor-section mt-3">
+                    <h4>Education</h4>
+                    <div id="edit-education-container"></div>
+                </div>
+
+                <!-- Certifications -->
+                <div class="editor-section mt-3">
+                    <h4>Certifications</h4>
+                    <textarea id="edit-certifications" class="form-control-sm" rows="3" oninput="updateSheetPreview()"></textarea>
+                </div>
+
+                <!-- Achievements -->
+                <div class="editor-section mt-3">
+                    <h4>Achievements & Coding Evidence</h4>
+                    <textarea id="edit-achievements" class="form-control-sm" rows="3" oninput="updateSheetPreview()"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Live ATS Resume Sheet -->
+        <div class="sheet-preview-panel">
+            <div class="sheet-container">
+                <div class="resume-sheet" id="ats-resume-sheet">
+                    <!-- Sheet Header -->
+                    <div class="sheet-header">
+                        <h1 class="sheet-name" id="sheet-name">ALEX KUMAR</h1>
+                        <p class="sheet-contact" id="sheet-contact">
+                            alex.kumar@example.com | +1 (555) 234-5678 | github.com/alexkumar-dev | linkedin.com/in/alexkumar-dev
+                        </p>
+                    </div>
+
+                    <!-- Summary -->
+                    <div class="sheet-section" id="sheet-summary-section">
+                        <h3 class="sheet-section-title">PROFESSIONAL SUMMARY</h3>
+                        <div class="sheet-divider"></div>
+                        <p class="sheet-body" id="sheet-summary-body"></p>
+                    </div>
+
+                    <!-- Skills -->
+                    <div class="sheet-section" id="sheet-skills-section">
+                        <h3 class="sheet-section-title">TECHNICAL SKILLS</h3>
+                        <div class="sheet-divider"></div>
+                        <div class="sheet-body" id="sheet-skills-body"></div>
+                    </div>
+
+                    <!-- Projects -->
+                    <div class="sheet-section" id="sheet-projects-section">
+                        <h3 class="sheet-section-title">TECHNICAL PROJECTS</h3>
+                        <div class="sheet-divider"></div>
+                        <div class="sheet-body" id="sheet-projects-body"></div>
+                    </div>
+
+                    <!-- Experience -->
+                    <div class="sheet-section" id="sheet-experience-section">
+                        <h3 class="sheet-section-title">EXPERIENCE & INTERNSHIPS</h3>
+                        <div class="sheet-divider"></div>
+                        <div class="sheet-body" id="sheet-experience-body"></div>
+                    </div>
+
+                    <!-- Education -->
+                    <div class="sheet-section" id="sheet-education-section">
+                        <h3 class="sheet-section-title">EDUCATION</h3>
+                        <div class="sheet-divider"></div>
+                        <div class="sheet-body" id="sheet-education-body"></div>
+                    </div>
+
+                    <!-- Certifications -->
+                    <div class="sheet-section" id="sheet-certifications-section">
+                        <h3 class="sheet-section-title">CERTIFICATIONS</h3>
+                        <div class="sheet-divider"></div>
+                        <div class="sheet-body" id="sheet-certifications-body"></div>
+                    </div>
+
+                    <!-- Achievements -->
+                    <div class="sheet-section" id="sheet-achievements-section">
+                        <h3 class="sheet-section-title">ACHIEVEMENTS & CODING EVIDENCE</h3>
+                        <div class="sheet-divider"></div>
+                        <div class="sheet-body" id="sheet-achievements-body"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const resumeId = urlParams.get('resume_id') || localStorage.getItem('current_resume_id');
+        const role = urlParams.get('role') || '{{ selected_role }}' || 'Frontend Developer';
+        const versionId = urlParams.get('version_id');
+
+        if (resumeId) {
+            localStorage.setItem('current_resume_id', resumeId);
+            loadResumePreview(resumeId, role, versionId);
+        } else {
+            showToast('No active resume. Redirecting to upload...', 'info');
+            setTimeout(() => { window.location.href = '/upload'; }, 1000);
+        }
+    });
+</script>
+{% endblock %}

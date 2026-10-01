@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>SkillAlignAI - Resume Analyzer & Builder</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+</head>
+
+<body>
+
+    <!-- =====================================================
+         NAVIGATION
+    ====================================================== -->
+
+    <nav class="navbar">
+
+        <div class="nav-container">
+
+            <div class="brand">
+
+                <a href="/">
+                    <strong>SkillAlignAI</strong>
+                </a>
+
+                <span>
+                    Resume Analyzer & Builder
+                </span>
+
+            </div>
+
+            <div class="nav-links">
+
+                <a href="/">
+                    Home
+                </a>
+
+                <a href="/upload">
+                    Upload
+                </a>
+
+                <a href="/analyze">
+                    Analyzer
+                </a>
+
+                <a href="/builder">
+                    Builder
+                </a>
+
+                <a href="/preview">
+                    Preview
+                </a>
+
+                <a href="/versions">
+                    Versions
+                </a>
+
+                <a href="/resume-doctor">
+                    Resume Doctor
+                </a>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =====================================================
+         HERO SECTION
+    ====================================================== -->
+
+    <main>
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <div class="demo-badge">
+                    1-Click Demo Resume
+                </div>
+
+                <p class="eyebrow">
+                    AI-Powered Role Alignment & Evidence Verification
+                </p>
+
+                <h1>
+                    Stop Sending Generic Resumes.
+                    <br>
+                    Build Verified, Role-Aligned Career Profiles.
+                </h1>
+
+                <p class="hero-description">
+
+                    Most student resumes fail ATS parsers and hiring
+                    screens because claimed skills are disconnected
+                    from verifiable evidence.
+
+                    SkillAlign AI analyzes your existing resume or
+                    builds an ATS-optimized draft using strict
+                    <strong>Claim → Evidence</strong> verification
+                    from your real projects, coursework, and assessments.
+
+                </p>
+
+                <div class="hero-buttons">
+
+                    <a
+                        href="/upload"
+                        class="btn btn-primary"
+                    >
+                        Analyze Existing Resume
+                    </a>
+
+                    <a
+                        href="/builder"
+                        class="btn btn-secondary"
+                    >
+                        Build Resume from Scratch
+                    </a>
+
+                </div>
+
+                <div class="demo-section">
+
+                    <a
+                        href="/api/load-sample"
+                        class="btn btn-demo"
+                    >
+                        Try 1-Click Hackathon Demo
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             FEATURE HIGHLIGHTS
+        ================================================== -->
+
+        <section class="features">
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    100%
+                </div>
+
+                <h3>
+                    Evidence Verification
+                </h3>
+
+                <p>
+                    Zero Fake Claims
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    5x
+                </div>
+
+                <h3>
+                    Role Alignment
+                </h3>
+
+                <p>
+                    Targeting
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    ATS
+                </div>
+
+                <h3>
+                    ATS Compliant
+                </h3>
+
+                <p>
+                    Standard PDF Generator
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    AI
+                </div>
+
+                <h3>
+                    Dual Engine
+                </h3>
+
+                <p>
+                    Gemini AI + Local Fallback
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             AI FEATURES
+        ================================================== -->
+
+        <section class="ai-features">
+
+            <div class="section-heading">
+
+                <p class="eyebrow">
+                    AI CAREER TOOLS
+                </p>
+
+                <h2>
+                    Go Beyond Resume Analysis
+                </h2>
+
+                <p>
+                    Use AI-powered tools to understand,
+                    improve, and prepare your career profile.
+                </p>
+
+            </div>
+
+
+            <div class="feature-grid">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        🩺
+                    </div>
+
+                    <h3>
+                        AI Resume Doctor
+                    </h3>
+
+                    <p>
+                        AI examines your actual resume and
+                        identifies weaknesses, missing information,
+                        evidence gaps, and role-specific improvements.
+                    </p>
+
+                    <a
+                        href="/resume-doctor"
+                        class="btn btn-primary"
+                    >
+                        Diagnose My Resume
+                    </a>
+
+                </div>
+
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        💬
+                    </div>
+
+                    <h3>
+                        AI HR Interview Simulator
+                    </h3>
+
+                    <p>
+                        Practice personalized interview questions
+                        generated from your resume, target role,
+                        and previous answers.
+                    </p>
+
+                    <a
+                        href="#"
+                        class="btn btn-secondary"
+                    >
+                        Coming Next
+                    </a>
+
+                </div>
+
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        🗺️
+                    </div>
+
+                    <h3>
+                        AI Career Roadmap
+                    </h3>
+
+                    <p>
+                        Get a personalized learning roadmap based
+                        on your current skills, target role,
+                        and identified skill gaps.
+                    </p>
+
+                    <a
+                        href="#"
+                        class="btn btn-secondary"
+                    >
+                        Coming Next
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             TARGET ROLE BENCHMARKS
+        ================================================== -->
+
+        <section class="roles-section">
+
+            <div class="section-heading">
+
+                <h2>
+                    Target Role Benchmarks
+                </h2>
+
+                <p>
+                    Tailor and score your skills against industry
+                    standards for high-demand technology roles.
+                </p>
+
+            </div>
+
+
+            <div class="role-grid">
+
+                {% for role_name, role in roles.items() %}
+
+                <div class="role-card">
+
+                    <h3>
+                        {{ role_name }}
+                    </h3>
+
+                    <span class="role-label">
+                        Engineering Benchmark
+                    </span>
+
+                    <p>
+                        {{ role.description }}
+                    </p>
+
+                    <h4>
+                        Core Skills:
+                    </h4>
+
+                    <div class="skills-list">
+
+                        {% for skill in role.core_skills %}
+
+                        <span class="skill-tag">
+                            {{ skill }}
+                        </span>
+
+                        {% endfor %}
+
+                    </div>
+
+                    <a
+                        href="/upload?role={{ role_name }}"
+                        class="role-link"
+                    >
+                        Analyze for {{ role_name }} →
+                    </a>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             PIPELINE
+        ================================================== -->
+
+        <section class="pipeline-section">
+
+            <div class="section-heading">
+
+                <h2>
+                    The Evidence-Based Pipeline
+                </h2>
+
+                <p>
+                    How SkillAlign AI turns unstructured student
+                    qualifications into ATS-ready role profiles.
+                </p>
+
+            </div>
+
+
+            <div class="pipeline-grid">
+
+                <div class="pipeline-card">
+
+                    <span class="pipeline-number">
+                        01
+                    </span>
+
+                    <h3>
+                        Upload or Build
+                    </h3>
+
+                    <p>
+                        Upload your PDF/DOCX resume or enter
+                        your details manually in our structured
+                        builder form.
+                    </p>
+
+                </div>
+
+
+                <div class="pipeline-card">
+
+                    <span class="pipeline-number">
+                        02
+                    </span>
+
+                    <h3>
+                        Select Target Role
+                    </h3>
+
+                    <p>
+                        Choose your target role or paste a
+                        real job description.
+                    </p>
+
+                </div>
+
+
+                <div class="pipeline-card">
+
+                    <span class="pipeline-number">
+                        03
+                    </span>
+
+                    <h3>
+                        Claim → Evidence Audit
+                    </h3>
+
+                    <p>
+                        Our engine maps every listed skill to
+                        real project, certification, or work evidence.
+                    </p>
+
+                </div>
+
+
+                <div class="pipeline-card">
+
+                    <span class="pipeline-number">
+                        04
+                    </span>
+
+                    <h3>
+                        Role Versions & ATS PDF
+                    </h3>
+
+                    <p>
+                        Generate tailored resume versions for
+                        different careers and download clean,
+                        ATS-compliant PDFs.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             CALL TO ACTION
+        ================================================== -->
+
+        <section class="cta-section">
+
+            <h2>
+                Ready to align your resume with real
+                engineering roles?
+            </h2>
+
+            <p>
+                Try the complete end-to-end flow with our
+                preloaded demo candidate or upload your own
+                resume now.
+            </p>
+
+            <div class="hero-buttons">
+
+                <a
+                    href="/upload"
+                    class="btn btn-primary"
+                >
+                    Start Resume Analysis
+                </a>
+
+                <a
+                    href="/api/load-sample"
+                    class="btn btn-secondary"
+                >
+                    Load Sample Resume
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer>
+
+        <p>
+            <strong>
+                AI Resume Analyzer & Skill-Based Resume Builder
+            </strong>
+            © 2026.
+            Built with Python Flask, SQLite, and Gemini AI.
+        </p>
+
+        <p>
+            Strict Anti-Hallucination Evidence Mapping
+            • Zero Fabricated Metrics
+            • ATS-Compliant PDF Export
+        </p>
+
+        <p>
+            <strong>
+                System Ready
+            </strong>
+        </p>
+
+    </footer>
+
+
+    <script
+        src="{{ url_for('static', filename='js/app.js') }}"
+    ></script>
+
+</body>
+
+</html>

@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% block title %}Resume Analysis & Evidence Audit - SkillAlign AI{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Top Action / Control Bar -->
+    <div class="analysis-control-bar card">
+        <div class="control-bar-left">
+            <h1 class="page-title-sm"><i class="fa-solid fa-chart-pie"></i> Resume Analysis & Evidence Audit</h1>
+            <p class="text-muted" id="candidate-meta-info">Analyzing candidate profile against target role benchmarks.</p>
+        </div>
+        <div class="control-bar-right">
+            <div class="role-selector-wrap">
+                <label for="analysis-role-select">Target Role:</label>
+                <select id="analysis-role-select" class="form-control-sm" onchange="changeAnalysisRole()">
+                    {% for role_name in roles.keys() %}
+                    <option value="{{ role_name }}" {% if role_name == selected_role %}selected{% endif %}>{{ role_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="reRunAnalysis()">
+                <i class="fa-solid fa-arrows-rotate"></i> Re-Analyze Role
+            </button>
+            <button class="btn btn-success btn-sm" onclick="generateAndGoToPreview()">
+                <i class="fa-solid fa-file-export"></i> Generate Role Resume <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Optional Job Description Accordion -->
+    <div class="card jd-toggle-card mb-4">
+        <details id="jd-details">
+            <summary class="jd-summary">
+                <span><i class="fa-solid fa-briefcase"></i> Job Description Match (Optional Real JD Input)</span>
+                <span class="badge badge-subtle">Click to expand</span>
+            </summary>
+            <div class="jd-body mt-3">
+                <div class="jd-actions-row mb-2">
+                    <button type="button" class="btn-link-sm" onclick="insertSampleJD('frontend')">Paste Sample Frontend JD</button>
+                    <span class="divider">|</span>
+                    <button type="button" class="btn-link-sm" onclick="insertSampleJD('aiml')">Paste Sample AI/ML JD</button>
+                </div>
+                <textarea id="analysis-jd-input" class="form-control" rows="4" placeholder="Paste custom job description to analyze specific requirements..."></textarea>
+                <div class="mt-2 text-right">
+                    <button class="btn btn-outline-primary btn-sm" onclick="reRunAnalysisWithJD()">
+                        Apply Job Description & Re-Score
+                    </button>
+                </div>
+            </div>
+        </details>
+    </div>
+
+    <!-- Section 4: Scorecards Visual Metrics -->
+    <section class="scores-grid mb-4" id="scores-section">
+        <!-- ATS Score -->
+        <div class="card score-card">
+            <div class="score-header">
+                <span class="score-title">ATS Score</span>
+                <i class="fa-solid fa-shield-halved score-icon icon-indigo"></i>
+            </div>
+            <div class="score-circle-wrap">
+                <div class="score-val" id="ats-score-val">--%</div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill fill-indigo" id="ats-bar" style="width: 0%;"></div>
+            </div>
+            <p class="score-caption">Parsability & candidate contact completeness</p>
+        </div>
+
+        <!-- Skill Match -->
+        <div class="card score-card">
+            <div class="score-header">
+                <span class="score-title">Skill Match</span>
+                <i class="fa-solid fa-bullseye score-icon icon-emerald"></i>
+            </div>
+            <div class="score-circle-wrap">
+                <div class="score-val" id="skill-match-val">--%</div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill fill-emerald" id="skill-bar" style="width: 0%;"></div>
+            </div>
+            <p class="score-caption">Match against core and recommended skills</p>
+        </div>
+
+        <!-- Role Alignment -->
+        <div class="card score-card">
+            <div class="score-header">
+                <span class="score-title">Role Alignment</span>
+                <i class="fa-solid fa-compass score-icon icon-blue"></i>
+            </div>
+            <div class="score-circle-wrap">
+                <div class="score-val" id="role-align-val">--%</div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill fill-blue" id="role-bar" style="width: 0%;"></div>
+            </div>
+            <p class="score-caption">Relevance of projects and technologies</p>
+        </div>
+
+        <!-- Resume Structure Score -->
+        <div class="card score-card">
+            <div class="score-header">
+                <span class="score-title">Structure Score</span>
+                <i class="fa-solid fa-layer-group score-icon icon-purple"></i>
+            </div>
+            <div class="score-circle-wrap">
+                <div class="score-val" id="structure-score-val">--%</div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill fill-purple" id="structure-bar" style="width: 0%;"></div>
+            </div>
+            <p class="score-caption">Section completeness and format hierarchy</p>
+        </div>
+
+        <!-- Evidence Strength -->
+        <div class="card score-card">
+            <div class="score-header">
+                <span class="score-title">Evidence Strength</span>
+                <i class="fa-solid fa-certificate score-icon icon-amber"></i>
+            </div>
+            <div class="score-circle-wrap">
+                <div class="score-val" id="evidence-strength-val">--%</div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill fill-amber" id="evidence-bar" style="width: 0%;"></div>
+            </div>
+            <p class="score-caption">Percentage of claimed skills backed by projects</p>
+        </div>
+    </section>
+
+    <!-- Engine Indicator Banner -->
+    <div id="engine-banner" class="alert-info-box mb-4">
+        <i class="fa-solid fa-microchip"></i> <span id="engine-text">Dual Engine Active (Gemini AI + Deterministic Fallback)</span>
+    </div>
+
+    <!-- Section 5: Skills Analysis (Matched, Missing, Weak/Unverified) -->
+    <section class="card skills-analysis-card mb-4">
+        <div class="card-header">
+            <h3><i class="fa-solid fa-code-compare"></i> Skills Gap Analysis for <span id="target-role-label">Role</span></h3>
+            <span class="text-muted">Every recommendation explains why it matters for this role</span>
+        </div>
+
+        <div class="skills-columns-grid">
+            <!-- Matched Skills -->
+            <div class="skill-category-col">
+                <div class="col-header header-matched">
+                    <h4><i class="fa-solid fa-circle-check"></i> Matched Skills (<span id="matched-count">0</span>)</h4>
+                </div>
+                <div id="matched-skills-list" class="skill-items-container"></div>
+            </div>
+
+            <!-- Missing Skills -->
+            <div class="skill-category-col">
+                <div class="col-header header-missing">
+                    <h4><i class="fa-solid fa-circle-xmark"></i> Missing Skills (<span id="missing-count">0</span>)</h4>
+                </div>
+                <div id="missing-skills-list" class="skill-items-container"></div>
+            </div>
+
+            <!-- Weak / Unverified Skills -->
+            <div class="skill-category-col">
+                <div class="col-header header-weak">
+                    <h4><i class="fa-solid fa-triangle-exclamation"></i> Weak / Unverified Skills (<span id="weak-count">0</span>)</h4>
+                </div>
+                <div id="weak-skills-list" class="skill-items-container"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 6: Evidence Mapping (CLAIM -> EVIDENCE) -->
+    <section class="card evidence-mapping-card mb-4">
+        <div class="card-header">
+            <div>
+                <h3><i class="fa-solid fa-link"></i> Evidence Mapping (CLAIM &rarr; EVIDENCE)</h3>
+                <p class="text-muted">Strict verification: Skills without supporting projects, certifications, or work experience are marked as <strong>"Not verified"</strong>. No fake evidence is ever created.</p>
+            </div>
+            <div class="evidence-stats-pill">
+                <span id="verified-pill-text">0 / 0 Verified</span>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table evidence-table">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">Claimed Skill</th>
+                        <th style="width: 20%;">Verification Status</th>
+                        <th style="width: 55%;">Supporting Evidence Source & Context</th>
+                    </tr>
+                </thead>
+                <tbody id="evidence-table-body">
+                    <!-- Populated dynamically via JS -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Section 7: Resume Improvement Report -->
+    <section class="card improvement-report-card mb-4">
+        <div class="card-header">
+            <div>
+                <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Resume Improvement Report</h3>
+                <p class="text-muted">Actionable suggestions with before & suggested phrasing. Zero fabricated numbers.</p>
+            </div>
+            <div class="category-filters" id="improvement-filters">
+                <button class="filter-pill active" onclick="filterImprovements('all')">All</button>
+                <button class="filter-pill" onclick="filterImprovements('ATS')">ATS</button>
+                <button class="filter-pill" onclick="filterImprovements('Skills')">Skills</button>
+                <button class="filter-pill" onclick="filterImprovements('Projects')">Projects</button>
+                <button class="filter-pill" onclick="filterImprovements('Role alignment')">Role Alignment</button>
+                <button class="filter-pill" onclick="filterImprovements('Missing evidence')">Missing Evidence</button>
+            </div>
+        </div>
+
+        <div id="improvements-container" class="improvements-grid"></div>
+    </section>
+
+    <!-- Bottom Actions -->
+    <div class="action-footer-card card text-center mb-5">
+        <h2>Generate Role-Tailored Resume Draft</h2>
+        <p class="text-muted">Transform your verified facts into an ATS-optimized resume prioritized for <strong id="action-role-text">{{ selected_role }}</strong>.</p>
+        <div class="action-btns mt-3">
+            <button class="btn btn-success btn-lg" onclick="generateAndGoToPreview()">
+                <i class="fa-solid fa-file-export"></i> Generate Role-Specific Resume Version &rarr;
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Initialize analysis page with query parameter resume_id
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const resumeId = urlParams.get('resume_id') || localStorage.getItem('current_resume_id');
+        const role = urlParams.get('role') || '{{ selected_role }}' || 'Frontend Developer';
+        
+        if (resumeId) {
+            localStorage.setItem('current_resume_id', resumeId);
+            runAnalysis(resumeId, role);
+        } else {
+            showToast('No resume selected. Please upload or load demo resume.', 'warning');
+            setTimeout(() => { window.location.href = '/upload'; }, 1500);
+        }
+    });
+</script>
+{% endblock %}

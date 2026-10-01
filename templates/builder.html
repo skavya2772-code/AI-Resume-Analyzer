@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}Resume Builder - SkillAlign AI{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header flex-header">
+        <div>
+            <h1 class="page-title"><i class="fa-solid fa-file-pen"></i> Skill-Based Resume Builder</h1>
+            <p class="page-subtitle">Build a verified, ATS-compliant resume from scratch. All inputs directly map to evidence.</p>
+        </div>
+        <div>
+            <button type="button" class="btn btn-outline-primary" onclick="prefillBuilderDemo()">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Pre-fill Demo Data
+            </button>
+        </div>
+    </div>
+
+    <form id="resume-builder-form" onsubmit="handleBuilderSubmit(event)">
+        <!-- 1. Personal & Contact Information -->
+        <div class="card builder-card mb-4">
+            <div class="card-header">
+                <h3><i class="fa-solid fa-user"></i> 1. Personal & Contact Details</h3>
+                <span class="badge badge-subtle">ATS Core</span>
+            </div>
+            <div class="grid-3-col">
+                <div class="form-group">
+                    <label class="form-label" for="b-name">Full Name *</label>
+                    <input type="text" id="b-name" class="form-control" placeholder="e.g. Alex Kumar" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="b-email">Email Address *</label>
+                    <input type="email" id="b-email" class="form-control" placeholder="e.g. alex@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="b-phone">Phone Number *</label>
+                    <input type="text" id="b-phone" class="form-control" placeholder="e.g. +1 (555) 234-5678" required>
+                </div>
+            </div>
+            <div class="grid-2-col mt-3">
+                <div class="form-group">
+                    <label class="form-label" for="b-github">GitHub Profile Link</label>
+                    <input type="text" id="b-github" class="form-control" placeholder="e.g. github.com/username">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="b-linkedin">LinkedIn Profile Link</label>
+                    <input type="text" id="b-linkedin" class="form-control" placeholder="e.g. linkedin.com/in/username">
+                </div>
+            </div>
+            <div class="form-group mt-3">
+                <label class="form-label" for="b-summary">Career Objective / Professional Summary</label>
+                <textarea id="b-summary" class="form-control" rows="3" placeholder="Brief summary of your technical foundation and career focus..."></textarea>
+            </div>
+        </div>
+
+        <!-- 2. Technical Skills -->
+        <div class="card builder-card mb-4">
+            <div class="card-header">
+                <div>
+                    <h3><i class="fa-solid fa-microchip"></i> 2. Technical Skills</h3>
+                    <p class="text-muted">Enter skills separated by commas. Each skill will be cross-referenced with your projects.</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Programming Languages & Technologies (Comma-Separated)</label>
+                <input type="text" id="b-skills-input" class="form-control" placeholder="e.g. Python, JavaScript, HTML, CSS, React, Node.js, SQL, Machine Learning, Git">
+            </div>
+            <div class="quick-skill-suggestions mt-2">
+                <span class="text-muted" style="font-size: 0.85rem;">Quick Suggestions:</span>
+                <button type="button" class="btn-tag" onclick="appendSkill('Python')">+ Python</button>
+                <button type="button" class="btn-tag" onclick="appendSkill('JavaScript')">+ JavaScript</button>
+                <button type="button" class="btn-tag" onclick="appendSkill('React')">+ React</button>
+                <button type="button" class="btn-tag" onclick="appendSkill('HTML')">+ HTML</button>
+                <button type="button" class="btn-tag" onclick="appendSkill('CSS')">+ CSS</button>
+                <button type="button" class="btn-tag" onclick="appendSkill('SQL')">+ SQL</button>
+                <button type="button" class="btn-tag" onclick="appendSkill('Node.js')">+ Node.js</button>
+                <button type="button" class="btn-tag" onclick="appendSkill('Machine Learning')">+ Machine Learning</button>
+                <button type="button" class="btn-tag" onclick="appendSkill('Git')">+ Git</button>
+            </div>
+        </div>
+
+        <!-- 3. Projects (Evidence Backbone) -->
+        <div class="card builder-card mb-4">
+            <div class="card-header flex-header">
+                <div>
+                    <h3><i class="fa-solid fa-diagram-project"></i> 3. Technical Projects (Key Evidence)</h3>
+                    <p class="text-muted">Projects prove your claimed skills. Detail technologies and actual implementations.</p>
+                </div>
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addProjectRow()">
+                    <i class="fa-solid fa-plus"></i> Add Project
+                </button>
+            </div>
+
+            <div id="projects-container">
+                <!-- Dynamically inserted project rows -->
+            </div>
+        </div>
+
+        <!-- 4. Experience & Internships -->
+        <div class="card builder-card mb-4">
+            <div class="card-header flex-header">
+                <div>
+                    <h3><i class="fa-solid fa-briefcase"></i> 4. Work Experience & Internships</h3>
+                    <p class="text-muted">Optional for freshmen/students; essential for internship credits.</p>
+                </div>
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addExperienceRow()">
+                    <i class="fa-solid fa-plus"></i> Add Experience
+                </button>
+            </div>
+
+            <div id="experience-container">
+                <!-- Dynamically inserted experience rows -->
+            </div>
+        </div>
+
+        <!-- 5. Education -->
+        <div class="card builder-card mb-4">
+            <div class="card-header flex-header">
+                <h3><i class="fa-solid fa-graduation-cap"></i> 5. Education Details</h3>
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addEducationRow()">
+                    <i class="fa-solid fa-plus"></i> Add Education
+                </button>
+            </div>
+
+            <div id="education-container">
+                <!-- Dynamically inserted education rows -->
+            </div>
+        </div>
+
+        <!-- 6. Certifications & Achievements -->
+        <div class="card builder-card mb-4">
+            <div class="card-header">
+                <h3><i class="fa-solid fa-award"></i> 6. Certifications & Achievements</h3>
+            </div>
+            
+            <div class="grid-2-col">
+                <div>
+                    <label class="form-label"><strong>Certifications (One per line)</strong></label>
+                    <textarea id="b-certifications" class="form-control" rows="4" placeholder="Meta Front-End Developer Certificate - Coursera&#10;Python for Data Science - Udemy"></textarea>
+                </div>
+                <div>
+                    <label class="form-label"><strong>Achievements & Coding Evidence (One per line)</strong></label>
+                    <textarea id="b-achievements" class="form-control" rows="4" placeholder="First Place Winner - Apex Hackathon 2024&#10;Solved 250+ LeetCode problems (Rating: 1680)&#10;Dean's Honor List"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Submission Actions -->
+        <div class="builder-actions-card card mb-5 text-center">
+            <h3>Ready to Validate & Generate?</h3>
+            <p class="text-muted">Save your profile to SQLite database and generate an ATS-ready resume draft.</p>
+            <div class="btn-group-center mt-3">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fa-solid fa-check"></i> Save & Generate ATS Resume
+                </button>
+                <button type="button" class="btn btn-secondary btn-lg" onclick="saveAndAnalyze()">
+                    <i class="fa-solid fa-chart-pie"></i> Save & Run Evidence Audit
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Initialize with default rows if empty
+        if (document.getElementById('projects-container').children.length === 0) {
+            addProjectRow();
+        }
+        if (document.getElementById('education-container').children.length === 0) {
+            addEducationRow();
+        }
+    });
+</script>
+{% endblock %}
